@@ -1,0 +1,62 @@
+Setup Steps
+Connect your flashed JetPack microSD card and power supply (DC barrel jack for 4G kit, USBC connector for 2G kit). The Jetson Nano Developer Kit will power on and boot automatically.
+A green LED next to the Micro-USB connector will light as soon as the developer kit powers on. Wait about 30 seconds. Then connect the USB cable from the Micro USB port on the Jetson Nano Developer Kit to the USB port on your computer.
+Connect your USB camera to a USB port on the Jetson Nano. (If using the alternate CSI camera, connect it to the CSI port.)
+If you are downloading the Docker container with the course notebooks in it for the first time, connect your Nano to the Internet using the Ethernet port or a compatible WiFi device.
+On your computer, open a terminal window if using Mac or Linux, and a PowerShell window if using Windows. In the terminal, log on to the Jetson Nano with the following command, where <username> is the values you set up on your Nano during the operating system configuration:
+ssh <username>@192.168.55.1
+Enter the password you configured when asked.
+Add a data directory for the course with the following command in the Jetson Nano terminal you've logged into:
+mkdir -p ~/nvdli-data
+Run the Docker container with the following command, where <tag> is a combination of the course version and Jetson Nano JetPack L4T operating system version (form is <tag> = <course_version>-<L4T_version>). A list of tags can be found in the course NVIDIA NGC cloud page.
+
+sudo docker run --runtime nvidia -it --rm --network host \
+    --volume ~/nvdli-data:/nvdli-nano/data \
+    --device /dev/video0 \
+    nvcr.io/nvidia/dli/dli-nano-ai:<tag>
+                    
+To create and run a reusable script for this step try the following (example tag shown):
+
+# create a reusable script
+echo "sudo docker run --runtime nvidia -it --rm --network host \
+    --volume ~/nvdli-data:/nvdli-nano/data \
+    --device /dev/video0 \
+    nvcr.io/nvidia/dli/dli-nano-ai:v2.0.2-r32.7.1" > docker_dli_run.sh
+
+# make the script executable
+chmod +x docker_dli_run.sh
+
+# run the script
+./docker_dli_run.sh
+                    
+If using the alternate CSI camera instead of the USB webcam, add --volume /tmp/argus_socket:/tmp/argus_socket to your docker run command. For example:
+
+# create a reusable script
+echo "sudo docker run --runtime nvidia -it --rm --network host \
+    --volume ~/nvdli-data:/nvdli-nano/data \
+    --volume /tmp/argus_socket:/tmp/argus_socket \
+    --device /dev/video0 \
+    nvcr.io/nvidia/dli/dli-nano-ai:v2.0.2-r32.7.1" > docker_dli_run.sh
+
+# make the script executable
+chmod +x docker_dli_run.sh
+
+# run the script
+./docker_dli_run.sh
+                    
+If using the alternate CSI camera AND the 2GB version, also add --memory=500M --memory-swap=4G to your docker run command. For example:
+
+# create a reusable script
+echo "sudo docker run --runtime nvidia -it --rm --network host \
+    --memory=500M --memory-swap=4G \
+    --volume ~/nvdli-data:/nvdli-nano/data \
+    --volume /tmp/argus_socket:/tmp/argus_socket \
+    --device /dev/video0 \
+    nvcr.io/nvidia/dli/dli-nano-ai:v2.0.2-r32.7.1" > docker_dli_run.sh
+
+# make the script executable
+chmod +x docker_dli_run.sh
+
+# run the script
+./docker_dli_run.sh
+                    
